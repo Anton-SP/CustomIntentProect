@@ -1,4 +1,4 @@
-package com.example.customintentproect
+package com.example.customintentproect.ui
 
 import android.os.Bundle
 import android.widget.Toast
