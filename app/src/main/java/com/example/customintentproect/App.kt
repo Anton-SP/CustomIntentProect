@@ -15,7 +15,7 @@ class App : Application() {
         NetDogRepoImpl(dogApi)
     }
 
-    val baseUrl = "https://dog.ceo/api/breeds/image/random"
+    val baseUrl = "https://dog.ceo/api/breeds/image/"
 
     val dogApi = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
