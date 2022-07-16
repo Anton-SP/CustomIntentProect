@@ -2,47 +2,57 @@ package com.example.customintentproect.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import com.example.customintentproect.app
 import com.example.customintentproect.databinding.ActivityMainBinding
 import com.example.customintentproect.intent.CustomIntentServiceImp
+import com.example.customintentproect.intent.CustomThread
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private  lateinit var dogViewModel: DogViewModel
+    private lateinit var dogViewModel: DogViewModel
 
     private val dogRepo by lazy { app.dogRepo }
 
+    private val thread by lazy { app.myThread }
+
     private val viewModelDisposable = CompositeDisposable()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initViewModel()
+        thread.start()
+
 
         binding.mainActivityLoadButton.setOnClickListener() { view ->
 
-
+            thread.post(thread.getCounter()+1)
             dogViewModel.onLoad()
+
         }
     }
 
-    private fun initViewModel() {
-        dogViewModel = getViewModel()
 
+    private fun initViewModel() {
+
+        dogViewModel = getViewModel()
+              
         viewModelDisposable.addAll(
 
-            dogViewModel.dogLiveData.subscribe{
-                if (it.message !=null) {
+            dogViewModel.dogLiveData.subscribe {
+                if (it.message != null) {
                     binding.mainActivityImageView.load(it.message)
-                    val myCustomIntentServiceImp = Intent(app,CustomIntentServiceImp::class.java)
-                    startService(myCustomIntentServiceImp.putExtra("status",it.status))
+                    val myCustomIntentServiceImp = Intent(app, CustomIntentServiceImp::class.java)
+                    startService(myCustomIntentServiceImp.putExtra("status", it.status))
                 }
             }
 
