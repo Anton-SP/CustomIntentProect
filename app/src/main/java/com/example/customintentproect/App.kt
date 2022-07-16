@@ -2,11 +2,8 @@ package com.example.customintentproect
 
 import android.app.Application
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import com.example.customintentproect.data.retrofit.DogsApi
 import com.example.customintentproect.data.retrofit.NetDogRepoImpl
-import com.example.customintentproect.intent.CustomThread
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
@@ -17,8 +14,6 @@ class App : Application() {
     val dogRepo by lazy {
         NetDogRepoImpl(dogApi)
     }
-
-    val myThread = CustomThread()
 
 
     val baseUrl = "https://dog.ceo/api/breeds/image/"

@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Message
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import com.example.customintentproect.app
@@ -20,9 +22,19 @@ class MainActivity : AppCompatActivity() {
 
     private val dogRepo by lazy { app.dogRepo }
 
-    private val thread by lazy { app.myThread }
-
     private val viewModelDisposable = CompositeDisposable()
+
+
+    val handler = object : Handler(Looper.getMainLooper()) {
+        override fun handleMessage(msg: Message) {
+            Log.d("###", " in when")
+            when (msg.what) {
+                0 -> binding.mainActivityCounterDataTextView.text = msg.arg1.toString()
+            }
+        }
+    }
+
+    private val thread = CustomThread(handler)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,9 +45,10 @@ class MainActivity : AppCompatActivity() {
         thread.start()
 
 
+
         binding.mainActivityLoadButton.setOnClickListener() { view ->
 
-            thread.post(thread.getCounter()+1)
+            thread.post(thread.getCounter() + 1)
             dogViewModel.onLoad()
 
         }
@@ -45,7 +58,7 @@ class MainActivity : AppCompatActivity() {
     private fun initViewModel() {
 
         dogViewModel = getViewModel()
-              
+
         viewModelDisposable.addAll(
 
             dogViewModel.dogLiveData.subscribe {
